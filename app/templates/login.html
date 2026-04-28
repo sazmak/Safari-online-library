@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Войти · Safari Digital Library{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div class="auth-brand">
+      <p class="auth-brand-name">Safari Digital Library</p>
+    </div>
+    <h1 class="auth-title">Добро пожаловать</h1>
+    <p class="auth-sub">Войдите в свой аккаунт</p>
+
+    <form method="POST" action="{{ url_for('main.login') }}" novalidate>
+      <div class="field">
+        <label for="username">Email</label>
+        <input type="email" id="username" name="username"
+               placeholder="you@example.com" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password"
+               placeholder="••••••••" autocomplete="current-password" required />
+      </div>
+      <div class="field-row">
+        <label class="checkbox-label">
+          <input type="checkbox" name="remember" />
+          <span>Запомнить меня</span>
+        </label>
+      </div>
+      <button type="submit" class="btn-submit btn-full">Войти</button>
+    </form>
+
+    <p class="auth-footer">
+      Нет аккаунта?
+      <a href="{{ url_for('main.register') }}" class="btn-link">Зарегистрироваться</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

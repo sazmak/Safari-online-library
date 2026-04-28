@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Добавить материал · Safari Digital Library{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-header">
+    <a href="{{ url_for('main.index') }}" class="back-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Назад
+    </a>
+    <h1 class="page-title">Добавить материал</h1>
+    <p class="form-subtitle">Поделитесь полезным ресурсом с командой</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('main.add_resource') }}" novalidate class="resource-form">
+
+    <div class="form-grid">
+      <div class="field field-full">
+        <label for="title">Название <span class="required">*</span></label>
+        <input type="text" id="title" name="title"
+               placeholder="Например: Лекция по алгоритмам — MIT OpenCourseWare"
+               required maxlength="200" />
+      </div>
+
+      <div class="field field-full">
+        <label for="link">Ссылка <span class="required">*</span></label>
+        <input type="url" id="link" name="link"
+               placeholder="https://..."
+               required />
+      </div>
+
+      <div class="field">
+        <label for="category">Категория <span class="required">*</span></label>
+        <select id="category" name="category" required>
+          {% for slug, label in categories %}
+            <option value="{{ slug }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="subject">Предмет / Тема</label>
+        <input type="text" id="subject" name="subject"
+               placeholder="Например: Математика, Python, История..." maxlength="100" />
+      </div>
+
+      <div class="field field-full">
+        <label for="description">Описание</label>
+        <textarea id="description" name="description" rows="4"
+                  placeholder="Кратко опишите, чем полезен этот материал..."></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a href="{{ url_for('main.index') }}" class="btn-outline">Отмена</a>
+      <button type="submit" class="btn-submit">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Опубликовать
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

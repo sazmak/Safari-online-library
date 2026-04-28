@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Все материалы · Safari Digital Library{% endblock %}
+
+{# ── Sidebar ────────────────────────────────────────────────── #}
+{% block sidebar %}
+<aside class="sidebar" aria-label="Фильтры">
+
+  <div class="sidebar-section">
+    <p class="sidebar-label">Навигация</p>
+    <a href="{{ url_for('main.index') }}"
+       class="filter-link {% if not active_category and not active_subject and not search_query %}active{% endif %}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Все материалы
+      <span class="filter-count">{{ resources | length if not active_category and not active_subject and not search_query else '' }}</span>
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <p class="sidebar-label">Категории</p>
+    {% for slug, label in categories %}
+      <a href="{{ url_for('main.index', category=slug, subject=active_subject, q=search_query) }}"
+         class="filter-link {% if active_category == slug %}active{% endif %}">
+        <span class="category-dot cat-{{ slug }}"></span>
+        {{ label }}
+      </a>
+    {% endfor %}
+  </div>
+
+  {% if subjects %}
+  <div class="sidebar-section">
+    <p class="sidebar-label">Предметы</p>
+    <div class="subject-pills">
+      {% for subj in subjects %}
+        <a href="{{ url_for('main.index', subject=subj, category=active_category, q=search_query) }}"
+           class="subject-pill {% if active_subject == subj %}active{% endif %}">
+          {{ subj }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</aside>
+{% endblock %}
+
+{# ── Main Content ───────────────────────────────────────────── #}
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">
+    {% if search_query %}
+      Результаты поиска
+    {% elif active_category %}
+      {% for slug, label in categories %}{% if slug == active_category %}{{ label }}{% endif %}{% endfor %}
+    {% elif active_subject %}
+      {{ active_subject }}
+    {% else %}
+      Все материалы
+    {% endif %}
+    <span class="count-badge">{{ resources | length }}</span>
+  </h1>
+
+  {% if active_category or active_subject or search_query %}
+    <a href="{{ url_for('main.index') }}" class="btn-clear-filter">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Сбросить фильтр
+    </a>
+  {% endif %}
+</div>
+
+{# ── Card Grid ──────────────────────────────────────────────── #}
+{% if resources %}
+  <div class="grid">
+    {% for res in resources %}
+    <article class="card">
+      <div class="card-top">
+        <span class="badge badge-{{ res.category }}">{{ res.category_label }}</span>
+        {% if current_user.is_authenticated and res.user_id == current_user.id %}
+          <form method="POST" action="{{ url_for('main.delete_resource', resource_id=res.id) }}"
+                onsubmit="return confirm('Удалить этот материал?')">
+            <button type="submit" class="btn-delete" aria-label="Удалить">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            </button>
+          </form>
+        {% endif %}
+      </div>
+
+      <h2 class="card-title">{{ res.title }}</h2>
+
+      {% if res.subject %}
+        <p class="card-subject">{{ res.subject }}</p>
+      {% endif %}
+
+      {% if res.short_description %}
+        <p class="card-description">{{ res.short_description }}</p>
+      {% endif %}
+
+      <div class="card-footer">
+        <span class="card-date">{{ res.timestamp.strftime('%d.%m.%Y') }}</span>
+        <a href="{{ res.link }}" target="_blank" rel="noopener noreferrer" class="card-link">
+          Открыть
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+{% else %}
+  {# Empty state #}
+  <div class="empty-state">
+    <div class="empty-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    </div>
+    <p class="empty-title">Материалы не найдены</p>
+    <p class="empty-sub">
+      {% if search_query %}
+        Попробуйте изменить запрос или <a href="{{ url_for('main.index') }}">сбросить фильтры</a>.
+      {% else %}
+        Станьте первым, кто поделится знаниями!
+      {% endif %}
+    </p>
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('main.add_resource') }}" class="btn-submit" style="margin-top:1rem">
+        + Добавить материал
+      </a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}
