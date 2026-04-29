@@ -1,0 +1,186 @@
+{#
+  Reusable resource card.
+  Expects:  res  (Resource, with .category_label already attached)
+  Used in:  index.html, profile.html
+#}
+<article class="card">
+
+  {# ── Top row: badge + delete ────────────────────────────────────────────── #}
+  <div class="card-top">
+    <span class="badge badge-{{ res.category }}">{{ res.category_label }}</span>
+    {% if current_user.is_authenticated and res.user_id == current_user.id %}
+      <form method="POST"
+            action="{{ url_for('main.delete_resource', resource_id=res.id) }}"
+            onsubmit="return confirm('Удалить этот материал?')">
+        <button type="submit" class="btn-delete" aria-label="Удалить">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14H6L5 6"/>
+            <path d="M10 11v6"/><path d="M14 11v6"/>
+            <path d="M9 6V4h6v2"/>
+          </svg>
+        </button>
+      </form>
+    {% endif %}
+  </div>
+
+  {# ── Title ──────────────────────────────────────────────────────────────── #}
+  <h2 class="card-title">{{ res.title }}</h2>
+
+  {% if res.subject %}
+    <p class="card-subject">{{ res.subject }}</p>
+  {% endif %}
+
+  {% if res.short_description %}
+    <p class="card-description">{{ res.short_description }}</p>
+  {% endif %}
+
+  {# ── Footer: date + open link ─────────────────────────────────────────── #}
+  <div class="card-footer">
+    <a href="{{ url_for('main.profile', username=res.author.username) }}"
+       class="card-author">{{ res.author.username }}</a>
+    <span class="card-date">{{ res.timestamp.strftime('%d.%m.%Y') }}</span>
+    <a href="{{ res.link }}" target="_blank" rel="noopener noreferrer" class="card-link">
+      Открыть
+      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <line x1="7" y1="17" x2="17" y2="7"/>
+        <polyline points="7 7 17 7 17 17"/>
+      </svg>
+    </a>
+  </div>
+
+  {# ── Interaction: votes ───────────────────────────────────────────────── #}
+  <div class="card-interactions">
+    {% if current_user.is_authenticated %}
+      {% set user_vote = res.user_vote(current_user.id) %}
+
+      <form method="POST"
+            action="{{ url_for('main.vote', resource_id=res.id, value='like') }}"
+            class="vote-form">
+        <button type="submit"
+                class="vote-btn {% if user_vote == 'like' %}vote-active-like{% endif %}"
+                aria-label="Нравится">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+               fill="{% if user_vote == 'like' %}currentColor{% else %}none{% endif %}"
+               stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+            <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+          </svg>
+          <span>{{ res.likes }}</span>
+        </button>
+      </form>
+
+      <form method="POST"
+            action="{{ url_for('main.vote', resource_id=res.id, value='dislike') }}"
+            class="vote-form">
+        <button type="submit"
+                class="vote-btn {% if user_vote == 'dislike' %}vote-active-dislike{% endif %}"
+                aria-label="Не нравится">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+               fill="{% if user_vote == 'dislike' %}currentColor{% else %}none{% endif %}"
+               stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/>
+            <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+          </svg>
+          <span>{{ res.dislikes }}</span>
+        </button>
+      </form>
+
+    {% else %}
+      {# Read-only counters for unauthenticated visitors #}
+      <span class="vote-btn vote-readonly" title="Войдите, чтобы голосовать">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+          <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+        </svg>
+        <span>{{ res.likes }}</span>
+      </span>
+      <span class="vote-btn vote-readonly" title="Войдите, чтобы голосовать">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/>
+          <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+        </svg>
+        <span>{{ res.dislikes }}</span>
+      </span>
+    {% endif %}
+
+    <span class="interaction-divider"></span>
+
+    {# ── Comment toggle ─────────────────────────────────────────────────── #}
+    <button class="vote-btn comment-toggle-btn"
+            onclick="toggleComments({{ res.id }})"
+            aria-expanded="false"
+            aria-controls="comments-{{ res.id }}">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span>{{ res.comments.count() }}</span>
+    </button>
+  </div>
+
+  {# ── Comments panel (hidden by default) ─────────────────────────────────── #}
+  <div class="comments-panel" id="comments-{{ res.id }}" hidden>
+
+    {# Existing comments #}
+    {% set comment_list = res.comments.all() %}
+    {% if comment_list %}
+      <ul class="comment-list">
+        {% for c in comment_list %}
+          <li class="comment-item">
+            <a href="{{ url_for('main.profile', username=c.author.username) }}"
+               class="comment-author">{{ c.author.username }}</a>
+            <span class="comment-text">{{ c.text }}</span>
+            <time class="comment-time"
+                  datetime="{{ c.timestamp.isoformat() }}">
+              {{ c.timestamp.strftime('%d.%m.%Y') }}
+            </time>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="comment-empty">Комментариев пока нет. Будьте первым!</p>
+    {% endif %}
+
+    {# New comment form (authenticated only) #}
+    {% if current_user.is_authenticated %}
+      <form method="POST"
+            action="{{ url_for('main.add_comment', resource_id=res.id) }}"
+            class="comment-form">
+        <input type="text"
+               name="text"
+               class="comment-input"
+               placeholder="Добавить комментарий..."
+               maxlength="500"
+               required
+               autocomplete="off" />
+        <button type="submit" class="comment-submit" aria-label="Отправить">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </form>
+    {% else %}
+      <p class="comment-empty">
+        <a href="{{ url_for('main.login') }}" style="color:var(--accent)">Войдите</a>,
+        чтобы оставить комментарий.
+      </p>
+    {% endif %}
+
+  </div>
+
+</article>

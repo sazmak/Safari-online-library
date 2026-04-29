@@ -1,6 +1,8 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from sqlalchemy import text
 from config import Config
 
 db = SQLAlchemy()
@@ -23,6 +25,17 @@ def create_app():
     with app.app_context():
         from . import models
         db.create_all()
+        # Add profile_picture column to existing DBs that predate this column
+        with db.engine.connect() as conn:
+            try:
+                conn.execute(text("ALTER TABLE users ADD COLUMN profile_picture VARCHAR(200)"))
+                conn.commit()
+            except Exception:
+                pass
+
+    # Ensure avatar upload directory exists
+    avatars_dir = os.path.join(app.root_path, 'static', 'uploads', 'avatars')
+    os.makedirs(avatars_dir, exist_ok=True)
 
     return app
 

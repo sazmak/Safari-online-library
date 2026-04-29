@@ -72,37 +72,7 @@
 {% if resources %}
   <div class="grid">
     {% for res in resources %}
-    <article class="card">
-      <div class="card-top">
-        <span class="badge badge-{{ res.category }}">{{ res.category_label }}</span>
-        {% if current_user.is_authenticated and res.user_id == current_user.id %}
-          <form method="POST" action="{{ url_for('main.delete_resource', resource_id=res.id) }}"
-                onsubmit="return confirm('Удалить этот материал?')">
-            <button type="submit" class="btn-delete" aria-label="Удалить">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-            </button>
-          </form>
-        {% endif %}
-      </div>
-
-      <h2 class="card-title">{{ res.title }}</h2>
-
-      {% if res.subject %}
-        <p class="card-subject">{{ res.subject }}</p>
-      {% endif %}
-
-      {% if res.short_description %}
-        <p class="card-description">{{ res.short_description }}</p>
-      {% endif %}
-
-      <div class="card-footer">
-        <span class="card-date">{{ res.timestamp.strftime('%d.%m.%Y') }}</span>
-        <a href="{{ res.link }}" target="_blank" rel="noopener noreferrer" class="card-link">
-          Открыть
-          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </a>
-      </div>
-    </article>
+      {% include "_card.html" %}
     {% endfor %}
   </div>
 

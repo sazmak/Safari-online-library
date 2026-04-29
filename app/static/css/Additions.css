@@ -1,0 +1,316 @@
+/* ═══════════════════════════════════════════════════════════════
+   Safari Digital Library — additions.css
+   Add @import or paste at the end of style.css
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ── Card author link ───────────────────────────────────────── */
+.card-author {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  transition: color var(--t-fast);
+}
+.card-author:hover { color: var(--accent); }
+
+
+/* ── Interaction bar (votes + comment toggle) ───────────────── */
+.card-interactions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding-top: var(--sp-3);
+  margin-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.vote-form { display: contents; }
+
+.vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-3);
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color var(--t-fast), background var(--t-fast), border-color var(--t-fast);
+}
+.vote-btn:hover {
+  color: var(--text-1);
+  background: var(--bg-hover);
+}
+.vote-btn svg { flex-shrink: 0; }
+
+/* Active states */
+.vote-active-like {
+  color: var(--accent) !important;
+  border-color: var(--border-accent) !important;
+  background: var(--accent-sub) !important;
+}
+.vote-active-dislike {
+  color: #d07878 !important;
+  border-color: rgba(208,120,120,0.28) !important;
+  background: rgba(208,120,120,0.08) !important;
+}
+.vote-readonly { cursor: default; pointer-events: none; }
+
+.interaction-divider {
+  flex: 1;
+}
+
+.comment-toggle-btn { margin-left: auto; }
+
+
+/* ── Comments panel ─────────────────────────────────────────── */
+.comments-panel {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+.comments-panel[hidden] { display: none; }
+
+.comment-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: var(--sp-3);
+}
+
+.comment-item {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.comment-item:last-child { border-bottom: none; }
+
+.comment-author {
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+  transition: opacity var(--t-fast);
+}
+.comment-author:hover { opacity: 0.75; }
+
+.comment-text {
+  color: var(--text-2);
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.comment-time {
+  font-size: 0.7rem;
+  color: var(--text-3);
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.comment-empty {
+  font-size: 0.78rem;
+  color: var(--text-3);
+  padding: var(--sp-2) 0;
+  margin-bottom: var(--sp-2);
+}
+
+/* Comment input row */
+.comment-form {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+  margin-top: var(--sp-2);
+}
+
+.comment-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 6px var(--sp-3);
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: var(--text-1);
+  outline: none;
+  transition: border-color var(--t-fast);
+}
+.comment-input::placeholder { color: var(--text-3); }
+.comment-input:focus {
+  border-color: var(--border-accent);
+}
+
+.comment-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: var(--accent-sub);
+  color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.comment-submit:hover {
+  background: var(--accent);
+  color: #0e0e0f;
+}
+
+
+/* ── Profile hero ───────────────────────────────────────────── */
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+  padding: var(--sp-8) 0 var(--sp-6);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent-sub);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.profile-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-username {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1.1;
+}
+
+.profile-joined {
+  font-size: 0.8rem;
+  color: var(--text-3);
+  margin-top: 4px;
+  text-transform: capitalize;
+}
+
+.profile-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: var(--sp-4) var(--sp-5);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--r-md);
+  background: var(--accent-sub);
+  min-width: 120px;
+}
+
+.profile-stat-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.profile-stat-label {
+  font-size: 0.72rem;
+  color: var(--text-2);
+  letter-spacing: 0.04em;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .profile-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-4);
+  }
+  .profile-stat {
+    align-items: flex-start;
+    width: 100%;
+  }
+}
+
+/* ── Avatar image support ───────────────────────────────────── */
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Editable avatar (own profile) */
+.profile-avatar--editable {
+  position: relative;
+  cursor: pointer;
+}
+
+.avatar-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.profile-avatar--editable:hover .avatar-overlay { opacity: 1; }
+
+
+/* ── Header mini avatar ─────────────────────────────────────── */
+.header-user-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.header-avatar-mini {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-sub);
+  border: 1px solid var(--border-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--accent);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.header-avatar-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/Additions.css') }}">
 </head>
 <body>
 
@@ -41,7 +42,16 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Добавить
       </a>
-      <span class="header-username">{{ current_user.username }}</span>
+      <a href="{{ url_for('main.profile', username=current_user.username) }}" class="header-username header-user-link">
+        <span class="header-avatar-mini">
+          {% if current_user.profile_picture %}
+            <img src="{{ url_for('static', filename='uploads/avatars/' + current_user.profile_picture) }}" alt="{{ current_user.username }}">
+          {% else %}
+            {{ current_user.username[0].upper() }}
+          {% endif %}
+        </span>
+        {{ current_user.username }}
+      </a>
       <form method="POST" action="{{ url_for('main.logout') }}" style="display:inline">
         <button type="submit" class="btn-ghost">Выйти</button>
       </form>
@@ -86,5 +96,6 @@
   });
 </script>
 {% block scripts %}{% endblock %}
+<script src="{{ url_for('static', filename='js/Comments toggle.js') }}"></script>
 </body>
 </html>
