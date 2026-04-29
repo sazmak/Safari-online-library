@@ -1,20 +1,30 @@
 import os
 from flask import (
     Blueprint, render_template, redirect, url_for,
-    request, flash, abort, current_app
+    request, flash, abort, current_app, send_from_directory
 )
 from flask_login import (
     login_user, logout_user, login_required, current_user
 )
-from sqlalchemy import or_
+from sqlalchemy.orm import selectinload
 from werkzeug.utils import secure_filename
 
-from .models import db, User, Resource, CATEGORIES, Comment, UserVote
+from .models import db, User, Resource, Comment, UserVote
 
-bp = main = Blueprint('main', __name__)
+bp = main = Blueprint("main", __name__)
+
+
+@main.route("/favicon.ico")
+def favicon():
+    return send_from_directory(
+        os.path.join(current_app.root_path, "static"),
+        "favicon.png",
+        mimetype="image/png",
+    )
 
 
 # ── Category registry ─────────────────────────────────────────────────────────
+
 CATEGORIES = [
     ("lecture", "Лекция"),
     ("book",    "Книга"),
@@ -27,7 +37,6 @@ CATEGORY_MAP = {slug: label for slug, label in CATEGORIES}
 
 
 def _attach_labels(resources):
-    """Add a .category_label attribute to each resource object."""
     for r in resources:
         r.category_label = CATEGORY_MAP.get(r.category, r.category.capitalize())
     return resources
@@ -41,29 +50,32 @@ def index():
     active_category = request.args.get("category", "").strip()
     active_subject  = request.args.get("subject", "").strip()
 
-    query = Resource.query
-
+    stmt = (
+        db.select(Resource)
+        .options(selectinload(Resource.comments))
+        .order_by(Resource.timestamp.desc())
+    )
     if q:
         like_q = f"%{q}%"
-        query = query.filter(
+        stmt = stmt.where(
             Resource.title.ilike(like_q) |
             Resource.subject.ilike(like_q) |
             Resource.description.ilike(like_q)
         )
     if active_category:
-        query = query.filter_by(category=active_category)
+        stmt = stmt.where(Resource.category == active_category)
     if active_subject:
-        query = query.filter_by(subject=active_subject)
+        stmt = stmt.where(Resource.subject == active_subject)
 
-    resources = _attach_labels(
-        query.order_by(Resource.timestamp.desc()).all()
+    resources = _attach_labels(db.session.execute(stmt).scalars().all())
+
+    subjects = sorted(
+        db.session.execute(
+            db.select(Resource.subject)
+            .where(Resource.subject.isnot(None))
+            .distinct()
+        ).scalars().all()
     )
-
-    # Unique subjects for the sidebar pill list
-    subjects = sorted({
-        r.subject for r in Resource.query.filter(Resource.subject.isnot(None)).all()
-        if r.subject
-    })
 
     return render_template(
         "index.html",
@@ -113,13 +125,12 @@ def add_resource():
 @main.route("/resource/<int:resource_id>/delete", methods=["POST"])
 @login_required
 def delete_resource(resource_id):
-    resource = Resource.query.get_or_404(resource_id)
+    resource = db.get_or_404(Resource, resource_id)
     if resource.user_id != current_user.id:
         abort(403)
     db.session.delete(resource)
     db.session.commit()
     flash("Материал удалён.", "info")
-    # Return to referer if possible
     return redirect(request.referrer or url_for("main.index"))
 
 
@@ -131,21 +142,19 @@ def vote(resource_id, value):
     if value not in ("like", "dislike"):
         abort(400)
 
-    resource = Resource.query.get_or_404(resource_id)
-    existing = UserVote.query.filter_by(
-        user_id=current_user.id, resource_id=resource_id
-    ).first()
+    resource = db.get_or_404(Resource, resource_id)
+    existing = db.session.execute(
+        db.select(UserVote).filter_by(user_id=current_user.id, resource_id=resource_id)
+    ).scalar_one_or_none()
 
     if existing:
         if existing.value == value:
-            # Toggle off: remove the vote
             if value == "like":
                 resource.likes    = max(0, resource.likes - 1)
             else:
                 resource.dislikes = max(0, resource.dislikes - 1)
             db.session.delete(existing)
         else:
-            # Switch vote direction
             if value == "like":
                 resource.likes    += 1
                 resource.dislikes  = max(0, resource.dislikes - 1)
@@ -154,17 +163,15 @@ def vote(resource_id, value):
                 resource.likes     = max(0, resource.likes - 1)
             existing.value = value
     else:
-        # New vote
         if value == "like":
             resource.likes    += 1
         else:
             resource.dislikes += 1
-        vote_obj = UserVote(
+        db.session.add(UserVote(
             user_id=current_user.id,
             resource_id=resource_id,
             value=value,
-        )
-        db.session.add(vote_obj)
+        ))
 
     db.session.commit()
     return redirect(request.referrer or url_for("main.index"))
@@ -175,18 +182,17 @@ def vote(resource_id, value):
 @main.route("/resource/<int:resource_id>/comment", methods=["POST"])
 @login_required
 def add_comment(resource_id):
-    Resource.query.get_or_404(resource_id)  # 404 guard
+    db.get_or_404(Resource, resource_id)
     text = request.form.get("text", "").strip()
 
     if not text:
         flash("Комментарий не может быть пустым.", "error")
     else:
-        comment = Comment(
+        db.session.add(Comment(
             text=text,
             user_id=current_user.id,
             resource_id=resource_id,
-        )
-        db.session.add(comment)
+        ))
         db.session.commit()
 
     return redirect(request.referrer or url_for("main.index"))
@@ -196,12 +202,14 @@ def add_comment(resource_id):
 
 @main.route("/profile/<username>")
 def profile(username):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = db.first_or_404(db.select(User).filter_by(username=username))
     resources = _attach_labels(
-        Resource.query
-        .filter_by(user_id=user.id)
-        .order_by(Resource.timestamp.desc())
-        .all()
+        db.session.execute(
+            db.select(Resource)
+            .where(Resource.user_id == user.id)
+            .options(selectinload(Resource.comments))
+            .order_by(Resource.timestamp.desc())
+        ).scalars().all()
     )
     return render_template(
         "profile.html",
@@ -231,7 +239,6 @@ def upload_avatar():
     save_dir = os.path.join(current_app.root_path, "static", "uploads", "avatars")
     os.makedirs(save_dir, exist_ok=True)
 
-    # Remove old avatar file if extension changed
     if current_user.profile_picture and current_user.profile_picture != filename:
         old_path = os.path.join(save_dir, current_user.profile_picture)
         if os.path.exists(old_path):
@@ -254,7 +261,9 @@ def login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
-        user = User.query.filter_by(username=username).first()
+        user = db.session.execute(
+            db.select(User).filter_by(username=username)
+        ).scalar_one_or_none()
 
         if user and user.check_password(password):
             login_user(user, remember=True)
@@ -274,7 +283,11 @@ def register():
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
 
-        if User.query.filter_by(username=username).first():
+        exists = db.session.execute(
+            db.select(User).filter_by(username=username)
+        ).scalar_one_or_none()
+
+        if exists:
             flash("Это имя пользователя уже занято.", "error")
         elif len(username) < 3:
             flash("Имя пользователя должно содержать минимум 3 символа.", "error")

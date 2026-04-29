@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Safari Digital Library{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.png') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -15,9 +18,14 @@
 {# ── Fixed Glass Header ─────────────────────────────────────── #}
 <header class="main-header">
   <div class="header-left">
-    <a href="{{ url_for('main.index') }}" class="logo-text">
-      Safari
-      <span class="logo-sub">Digital Library</span>
+    <a href="{{ url_for('main.index') }}" class="logo-img-link">
+      <img src="{{ url_for('static', filename='logo.png') }}"
+           alt="Safari Digital Library"
+           class="logo-img"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <span class="logo-text-fallback" style="display:none">
+        Safari<span class="logo-sub">Digital Library</span>
+      </span>
     </a>
   </div>
 
@@ -97,5 +105,22 @@
 </script>
 {% block scripts %}{% endblock %}
 <script src="{{ url_for('static', filename='js/Comments toggle.js') }}"></script>
+
+{# ── Comments Modal ──────────────────────────────────────────── #}
+<div id="comments-modal-overlay" class="comments-modal-overlay" hidden aria-hidden="true">
+  <div class="comments-modal" role="dialog" aria-modal="true" aria-labelledby="comments-modal-title">
+    <div class="comments-modal-header">
+      <h3 class="comments-modal-title" id="comments-modal-title">Комментарии</h3>
+      <button class="comments-modal-close" onclick="closeCommentsModal()" aria-label="Закрыть">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="comments-modal-body" id="comments-modal-body"></div>
+  </div>
+</div>
 </body>
 </html>

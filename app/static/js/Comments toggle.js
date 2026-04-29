@@ -1,24 +1,41 @@
-/**
- * Toggle the comments panel for a given resource card.
- * Called inline via onclick="toggleComments(id)".
- */
 function toggleComments(resourceId) {
-  const panel  = document.getElementById('comments-' + resourceId);
-  const btn    = panel
-    ? panel.closest('.card').querySelector('.comment-toggle-btn')
-    : null;
-
+  const panel = document.getElementById('comments-' + resourceId);
   if (!panel) return;
 
-  const isHidden = panel.hasAttribute('hidden');
-  if (isHidden) {
-    panel.removeAttribute('hidden');
-    if (btn) btn.setAttribute('aria-expanded', 'true');
-    // Focus the input if user is logged in
-    const input = panel.querySelector('.comment-input');
-    if (input) input.focus();
-  } else {
-    panel.setAttribute('hidden', '');
-    if (btn) btn.setAttribute('aria-expanded', 'false');
-  }
+  const card  = panel.closest('.card');
+  const btn   = card ? card.querySelector('.comment-toggle-btn') : null;
+  const title = btn ? btn.dataset.title : '';
+
+  const overlay   = document.getElementById('comments-modal-overlay');
+  const modalBody = document.getElementById('comments-modal-body');
+  const modalTitle = document.getElementById('comments-modal-title');
+
+  if (!overlay || !modalBody) return;
+
+  modalTitle.textContent = title || 'Комментарии';
+  modalBody.innerHTML = '';
+  modalBody.appendChild(panel.cloneNode(true));
+
+  overlay.removeAttribute('hidden');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  const input = modalBody.querySelector('.comment-input');
+  if (input) input.focus();
 }
+
+function closeCommentsModal() {
+  const overlay = document.getElementById('comments-modal-overlay');
+  if (!overlay) return;
+  overlay.setAttribute('hidden', '');
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeCommentsModal();
+});
+
+document.getElementById('comments-modal-overlay')?.addEventListener('click', function (e) {
+  if (e.target === this) closeCommentsModal();
+});

@@ -100,15 +100,28 @@ img, svg { display: block; }
 }
 
 /* Logo */
-.logo-text {
+.logo-img-link {
   display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  margin-right: var(--sp-2);
+}
+
+.logo-text-fallback {
   flex-direction: column;
   gap: 0;
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.3rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: var(--text-1);
+  color: var(--accent);
   white-space: nowrap;
   line-height: 1;
 }
@@ -121,6 +134,7 @@ img, svg { display: block; }
   text-transform: uppercase;
   color: var(--text-3);
   margin-top: 3px;
+  display: block;
 }
 
 /* Search */

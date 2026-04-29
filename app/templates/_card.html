@@ -119,14 +119,14 @@
     {# ── Comment toggle ─────────────────────────────────────────────────── #}
     <button class="vote-btn comment-toggle-btn"
             onclick="toggleComments({{ res.id }})"
-            aria-expanded="false"
-            aria-controls="comments-{{ res.id }}">
+            data-title="{{ res.title }}"
+            aria-label="Комментарии">
       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
-      <span>{{ res.comments.count() }}</span>
+      <span>{{ res.comments | length }}</span>
     </button>
   </div>
 
@@ -134,10 +134,9 @@
   <div class="comments-panel" id="comments-{{ res.id }}" hidden>
 
     {# Existing comments #}
-    {% set comment_list = res.comments.all() %}
-    {% if comment_list %}
+    {% if res.comments %}
       <ul class="comment-list">
-        {% for c in comment_list %}
+        {% for c in res.comments %}
           <li class="comment-item">
             <a href="{{ url_for('main.profile', username=c.author.username) }}"
                class="comment-author">{{ c.author.username }}</a>
