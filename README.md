@@ -3,7 +3,103 @@
 ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 
+> **🌍 Live Demo:** (https://safari-online-library.onrender.com/)
+
+**Safari Digital Library** is an aesthetic and functional knowledge base designed for teams and students. It eliminates the chaos of losing important links in messenger chats by providing a structured, centralized platform for educational resources.
+
+> **The Problem:** Educational materials (lectures, books, articles, videos) often get lost in infinite chat histories.
+> **The Solution:** A unified hub with smart filtering and a premium *Editorial Dark* design.
+
+---
+
+## ✨ Key Features
+
+* 🌑 **Premium UI/UX:** High-end dark interface featuring "Glassmorphism" effects and golden accents.
+* 🔍 **Smart Discovery:** Instant filtering by title, author, or category.
+* 👍 **Interactive System:** Like/Dislike functionality to highlight the most valuable resources.
+* 💬 **Engaging Discussions:** A dedicated comment section for every resource to facilitate feedback.
+* 👤 **User Profiles:** Personalized dashboards where authors can manage their uploaded content.
+* 📱 **Fully Responsive:** Optimized for everything from 4K monitors to mobile screens.
+
+---
+
+## 🛠 Tech Stack
+
+* **Backend:** Python 3.10+, Flask (Application Factory Pattern)
+* **Database & ORM:** SQLAlchemy with support for SQLite (local) and PostgreSQL (production).
+* **Authentication:** Flask-Login with secure password hashing.
+* **Frontend:** Jinja2 templates, Modern Vanilla CSS (Variables, Flexbox, Grid), and JavaScript for interactive elements.
+
+---
+
+## 📂 Project Structure
+
+```text
+SAFARI-ONLINE-LIBRARY/
+├── app/                     # Main application package
+│   ├── static/              # Static assets (Custom CSS, JS, Avatars)
+│   ├── templates/           # Jinja2 HTML templates
+│   │   ├── _card.html       # Reusable resource card component
+│   │   └── ...              # Page templates (index, profile, login, etc.)
+│   ├── __init__.py          # App factory & extension initialization
+│   ├── models.py            # SQLAlchemy database models
+│   └── routes.py            # Application routing & business logic
+├── instance/                # Local data storage (SQLite)
+├── config.py                # Environment-based configurations
+├── run.py                   # Application entry point
+├── requirements.txt         # Project dependencies
+└── render.yaml              # Deployment configuration for Render.com
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Environment Setup
+Clone the repository and create a virtual environment:
+```bash
+git clone [https://github.com/sazmak/Safari-online-library.git](https://github.com/sazmak/Safari-online-library.git)
+cd Safari-online-library
+python -m venv venv
+# Activate on Windows:
+venv\Scripts\activate
+# Activate on macOS/Linux:
+source venv/bin/activate
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the Application
+The database will be initialized automatically on the first run:
+```bash
+python run.py
+```
+Access the local server at: `http://127.0.0.1:5000`
+
+---
+
+## 👥 Team
+Developed with ❤️ by **SAFARI-team** for the Ed-Tech Challenge.
+*Created to ensure that knowledge is never lost, only shared.*
+
+
+
+---
+
+
+
+
+# 🦁 Safari Digital Library
+
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 
 **Сыллка на сайт** - https://safari-online-library.onrender.com/
 
@@ -84,8 +180,6 @@ python run.py
 
 ## 👥 Команда
 Разработано с любовью командой **SAFARI-team** в рамках Ed-Tech Challenge.
-
----
 *Проект создан для того, чтобы знания не терялись, а множились.*
 
 
