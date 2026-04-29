@@ -190,6 +190,21 @@ msgstr "Username must be at least 3 characters."
 msgid "Пароль должен содержать минимум 6 символов."
 msgstr "Password must be at least 6 characters."
 
+msgid "Логин"
+msgstr "Login"
+
+msgid "Имя пользователя или Email"
+msgstr "Username or Email"
+
+msgid "Имя пользователя"
+msgstr "Username"
+
+msgid "Уникальное имя"
+msgstr "Unique name"
+
+msgid "Этот email уже зарегистрирован."
+msgstr "This email is already registered."
+
 msgid "Добро пожаловать, %(username)s!"
 msgstr "Welcome, %(username)s!"
 

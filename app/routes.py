@@ -252,10 +252,12 @@ def login():
         return redirect(url_for("main.index"))
 
     if request.method == "POST":
-        username = request.form.get("username", "").strip()
-        password = request.form.get("password", "")
+        login_input = request.form.get("login", "").strip()
+        password    = request.form.get("password", "")
         user = db.session.execute(
-            db.select(User).filter_by(username=username)
+            db.select(User).where(
+                (User.username == login_input) | (User.email == login_input)
+            )
         ).scalar_one_or_none()
 
         if user and user.check_password(password):
@@ -274,20 +276,26 @@ def register():
 
     if request.method == "POST":
         username = request.form.get("username", "").strip()
+        email    = request.form.get("email", "").strip().lower() or None
         password = request.form.get("password", "")
 
-        exists = db.session.execute(
+        username_taken = db.session.execute(
             db.select(User).filter_by(username=username)
         ).scalar_one_or_none()
+        email_taken = email and db.session.execute(
+            db.select(User).filter_by(email=email)
+        ).scalar_one_or_none()
 
-        if exists:
+        if username_taken:
             flash(_("Это имя пользователя уже занято."), "error")
+        elif email_taken:
+            flash(_("Этот email уже зарегистрирован."), "error")
         elif len(username) < 3:
             flash(_("Имя пользователя должно содержать минимум 3 символа."), "error")
         elif len(password) < 6:
             flash(_("Пароль должен содержать минимум 6 символов."), "error")
         else:
-            user = User(username=username)
+            user = User(username=username, email=email)
             user.set_password(password)
             db.session.add(user)
             db.session.commit()

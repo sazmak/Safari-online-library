@@ -13,19 +13,21 @@
 
     <form method="POST" action="{{ url_for('main.register') }}" novalidate>
       <div class="field">
-        <label for="username">Email</label>
-        <input type="email" id="username" name="username"
-               placeholder="you@example.com" autocomplete="email" required />
+        <label for="username">{{ _('Имя пользователя') }} <span class="required">*</span></label>
+        <input type="text" id="username" name="username"
+               placeholder="{{ _('Уникальное имя') }}"
+               autocomplete="username" required />
       </div>
       <div class="field">
-        <label for="password">{{ _('Пароль') }}</label>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email"
+               placeholder="you@example.com"
+               autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="password">{{ _('Пароль') }} <span class="required">*</span></label>
         <input type="password" id="password" name="password"
                placeholder="{{ _('Минимум 6 символов') }}" autocomplete="new-password" required />
-      </div>
-      <div class="field">
-        <label for="confirm">{{ _('Подтвердите пароль') }}</label>
-        <input type="password" id="confirm" name="confirm"
-               placeholder="{{ _('Повторите пароль') }}" autocomplete="new-password" required />
       </div>
       <button type="submit" class="btn-submit btn-full">{{ _('Зарегистрироваться') }}</button>
     </form>

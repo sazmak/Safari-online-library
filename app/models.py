@@ -21,6 +21,7 @@ class User(UserMixin, db.Model):
 
     id:              Mapped[int]           = mapped_column(primary_key=True)
     username:        Mapped[str]           = mapped_column(String(120), unique=True, nullable=False)
+    email:           Mapped[Optional[str]] = mapped_column(String(200), unique=True, nullable=True, index=True)
     password_hash:   Mapped[str]           = mapped_column(String(256), nullable=False)
     created_at:      Mapped[datetime]      = mapped_column(
         DateTime(timezone=True),

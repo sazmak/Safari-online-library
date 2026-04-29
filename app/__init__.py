@@ -3,6 +3,7 @@ from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_babel import Babel
+from sqlalchemy import text
 from config import Config
 
 db = SQLAlchemy()
@@ -37,6 +38,12 @@ def create_app():
     with app.app_context():
         from . import models
         db.create_all()
+        with db.engine.connect() as conn:
+            try:
+                conn.execute(text("ALTER TABLE users ADD COLUMN email VARCHAR(200) UNIQUE"))
+                conn.commit()
+            except Exception:
+                pass
 
     avatars_dir = os.path.join(app.root_path, "static", "uploads", "avatars")
     os.makedirs(avatars_dir, exist_ok=True)

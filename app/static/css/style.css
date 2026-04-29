@@ -657,15 +657,31 @@ img, svg { display: block; }
 .card-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--sp-2);
   margin-top: auto;
   padding-top: var(--sp-3);
   border-top: 1px solid var(--border);
+  min-width: 0;
 }
+
+.card-author {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 1;
+  max-width: 110px;
+  transition: color var(--t-fast);
+}
+.card-author:hover { color: var(--accent); }
 
 .card-date {
   font-size: 0.72rem;
   color: var(--text-3);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .card-link {
@@ -675,6 +691,9 @@ img, svg { display: block; }
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
   transition: color var(--t-fast), gap var(--t-fast);
 }
 
