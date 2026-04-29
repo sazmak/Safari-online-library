@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Регистрация · Safari Digital Library{% endblock %}
+{% block title %}{{ _('Регистрация') }} · Safari Digital Library{% endblock %}
 {% block content_class %}content-wide{% endblock %}
 
 {% block content %}
@@ -8,8 +8,8 @@
     <div class="auth-brand">
       <p class="auth-brand-name">Safari Digital Library</p>
     </div>
-    <h1 class="auth-title">Создать аккаунт</h1>
-    <p class="auth-sub">Присоединяйтесь к библиотеке знаний</p>
+    <h1 class="auth-title">{{ _('Создать аккаунт') }}</h1>
+    <p class="auth-sub">{{ _('Присоединяйтесь к библиотеке знаний') }}</p>
 
     <form method="POST" action="{{ url_for('main.register') }}" novalidate>
       <div class="field">
@@ -18,21 +18,21 @@
                placeholder="you@example.com" autocomplete="email" required />
       </div>
       <div class="field">
-        <label for="password">Пароль</label>
+        <label for="password">{{ _('Пароль') }}</label>
         <input type="password" id="password" name="password"
-               placeholder="Минимум 6 символов" autocomplete="new-password" required />
+               placeholder="{{ _('Минимум 6 символов') }}" autocomplete="new-password" required />
       </div>
       <div class="field">
-        <label for="confirm">Подтвердите пароль</label>
+        <label for="confirm">{{ _('Подтвердите пароль') }}</label>
         <input type="password" id="confirm" name="confirm"
-               placeholder="Повторите пароль" autocomplete="new-password" required />
+               placeholder="{{ _('Повторите пароль') }}" autocomplete="new-password" required />
       </div>
-      <button type="submit" class="btn-submit btn-full">Зарегистрироваться</button>
+      <button type="submit" class="btn-submit btn-full">{{ _('Зарегистрироваться') }}</button>
     </form>
 
     <p class="auth-footer">
-      Уже есть аккаунт?
-      <a href="{{ url_for('main.login') }}" class="btn-link">Войти</a>
+      {{ _('Уже есть аккаунт?') }}
+      <a href="{{ url_for('main.login') }}" class="btn-link">{{ _('Войти') }}</a>
     </p>
   </div>
 </div>

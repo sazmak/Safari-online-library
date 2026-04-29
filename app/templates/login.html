@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Войти · Safari Digital Library{% endblock %}
+{% block title %}{{ _('Войти') }} · Safari Digital Library{% endblock %}
 {% block content_class %}content-wide{% endblock %}
 
 {% block content %}
@@ -8,8 +8,8 @@
     <div class="auth-brand">
       <p class="auth-brand-name">Safari Digital Library</p>
     </div>
-    <h1 class="auth-title">Добро пожаловать</h1>
-    <p class="auth-sub">Войдите в свой аккаунт</p>
+    <h1 class="auth-title">{{ _('Добро пожаловать') }}</h1>
+    <p class="auth-sub">{{ _('Войдите в свой аккаунт') }}</p>
 
     <form method="POST" action="{{ url_for('main.login') }}" novalidate>
       <div class="field">
@@ -18,22 +18,22 @@
                placeholder="you@example.com" autocomplete="email" required />
       </div>
       <div class="field">
-        <label for="password">Пароль</label>
+        <label for="password">{{ _('Пароль') }}</label>
         <input type="password" id="password" name="password"
                placeholder="••••••••" autocomplete="current-password" required />
       </div>
       <div class="field-row">
         <label class="checkbox-label">
           <input type="checkbox" name="remember" />
-          <span>Запомнить меня</span>
+          <span>{{ _('Запомнить меня') }}</span>
         </label>
       </div>
-      <button type="submit" class="btn-submit btn-full">Войти</button>
+      <button type="submit" class="btn-submit btn-full">{{ _('Войти') }}</button>
     </form>
 
     <p class="auth-footer">
-      Нет аккаунта?
-      <a href="{{ url_for('main.register') }}" class="btn-link">Зарегистрироваться</a>
+      {{ _('Нет аккаунта?') }}
+      <a href="{{ url_for('main.register') }}" class="btn-link">{{ _('Зарегистрироваться') }}</a>
     </p>
   </div>
 </div>

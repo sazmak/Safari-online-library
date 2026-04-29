@@ -1,11 +1,17 @@
 import os
-from flask import Flask
+from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_babel import Babel
 from config import Config
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+babel = Babel()
+
+
+def get_locale():
+    return session.get('language', 'ru')
 
 
 def create_app():
@@ -20,9 +26,9 @@ def create_app():
 
     db.init_app(app)
     login_manager.init_app(app)
+    babel.init_app(app, locale_selector=get_locale)
 
     login_manager.login_view = "main.login"
-    login_manager.login_message = "Пожалуйста, войдите в систему."
     login_manager.login_message_category = "info"
 
     from app.routes import main

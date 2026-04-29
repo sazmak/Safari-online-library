@@ -1,11 +1,12 @@
 import os
 from flask import (
     Blueprint, render_template, redirect, url_for,
-    request, flash, abort, current_app, send_from_directory
+    request, flash, abort, current_app, send_from_directory, session
 )
 from flask_login import (
     login_user, logout_user, login_required, current_user
 )
+from flask_babel import lazy_gettext as _l, gettext as _
 from sqlalchemy.orm import selectinload
 from werkzeug.utils import secure_filename
 
@@ -14,32 +15,42 @@ from .models import db, User, Resource, Comment, UserVote
 bp = main = Blueprint("main", __name__)
 
 
+# ── Category registry ─────────────────────────────────────────────────────────
+
+CATEGORIES = [
+    ("lecture", _l("Лекция")),
+    ("book",    _l("Книга")),
+    ("article", _l("Статья")),
+    ("video",   _l("Видео")),
+    ("task",    _l("Задание")),
+    ("other",   _l("Другое")),
+]
+
+
+def _attach_labels(resources):
+    category_map = {slug: str(label) for slug, label in CATEGORIES}
+    for r in resources:
+        r.category_label = category_map.get(r.category, r.category.capitalize())
+    return resources
+
+
+# ── Favicon ───────────────────────────────────────────────────────────────────
+
 @main.route("/favicon.ico")
 def favicon():
     return send_from_directory(
         os.path.join(current_app.root_path, "static"),
-        "favicon.png",
-        mimetype="image/png",
+        "favicon.png", mimetype="image/png",
     )
 
 
-# ── Category registry ─────────────────────────────────────────────────────────
+# ── Language switch ───────────────────────────────────────────────────────────
 
-CATEGORIES = [
-    ("lecture", "Лекция"),
-    ("book",    "Книга"),
-    ("article", "Статья"),
-    ("video",   "Видео"),
-    ("task",    "Задание"),
-    ("other",   "Другое"),
-]
-CATEGORY_MAP = {slug: label for slug, label in CATEGORIES}
-
-
-def _attach_labels(resources):
-    for r in resources:
-        r.category_label = CATEGORY_MAP.get(r.category, r.category.capitalize())
-    return resources
+@main.route("/set_language/<lang>")
+def set_language(lang):
+    if lang in current_app.config.get("LANGUAGES", ["ru", "en", "kk"]):
+        session["language"] = lang
+    return redirect(request.referrer or url_for("main.index"))
 
 
 # ── Index ─────────────────────────────────────────────────────────────────────
@@ -68,23 +79,16 @@ def index():
         stmt = stmt.where(Resource.subject == active_subject)
 
     resources = _attach_labels(db.session.execute(stmt).scalars().all())
-
     subjects = sorted(
         db.session.execute(
-            db.select(Resource.subject)
-            .where(Resource.subject.isnot(None))
-            .distinct()
+            db.select(Resource.subject).where(Resource.subject.isnot(None)).distinct()
         ).scalars().all()
     )
 
     return render_template(
-        "index.html",
-        resources=resources,
-        categories=CATEGORIES,
-        subjects=subjects,
-        active_category=active_category,
-        active_subject=active_subject,
-        search_query=q,
+        "index.html", resources=resources, categories=CATEGORIES,
+        subjects=subjects, active_category=active_category,
+        active_subject=active_subject, search_query=q,
     )
 
 
@@ -101,20 +105,15 @@ def add_resource():
         description = request.form.get("description", "").strip() or None
 
         if not title or not link or not category:
-            flash("Заполните все обязательные поля.", "error")
+            flash(_("Заполните все обязательные поля."), "error")
             return render_template("add_resource.html", categories=CATEGORIES)
 
-        resource = Resource(
-            title=title,
-            link=link,
-            category=category,
-            subject=subject,
-            description=description,
-            user_id=current_user.id,
-        )
-        db.session.add(resource)
+        db.session.add(Resource(
+            title=title, link=link, category=category,
+            subject=subject, description=description, user_id=current_user.id,
+        ))
         db.session.commit()
-        flash("Материал успешно добавлен!", "success")
+        flash(_("Материал успешно добавлен!"), "success")
         return redirect(url_for("main.index"))
 
     return render_template("add_resource.html", categories=CATEGORIES)
@@ -130,11 +129,11 @@ def delete_resource(resource_id):
         abort(403)
     db.session.delete(resource)
     db.session.commit()
-    flash("Материал удалён.", "info")
+    flash(_("Материал удалён."), "info")
     return redirect(request.referrer or url_for("main.index"))
 
 
-# ── Vote (like / dislike) ─────────────────────────────────────────────────────
+# ── Vote ──────────────────────────────────────────────────────────────────────
 
 @main.route("/resource/<int:resource_id>/vote/<string:value>", methods=["POST"])
 @login_required
@@ -168,9 +167,7 @@ def vote(resource_id, value):
         else:
             resource.dislikes += 1
         db.session.add(UserVote(
-            user_id=current_user.id,
-            resource_id=resource_id,
-            value=value,
+            user_id=current_user.id, resource_id=resource_id, value=value,
         ))
 
     db.session.commit()
@@ -186,12 +183,10 @@ def add_comment(resource_id):
     text = request.form.get("text", "").strip()
 
     if not text:
-        flash("Комментарий не может быть пустым.", "error")
+        flash(_("Комментарий не может быть пустым."), "error")
     else:
         db.session.add(Comment(
-            text=text,
-            user_id=current_user.id,
-            resource_id=resource_id,
+            text=text, user_id=current_user.id, resource_id=resource_id,
         ))
         db.session.commit()
 
@@ -212,10 +207,8 @@ def profile(username):
         ).scalars().all()
     )
     return render_template(
-        "profile.html",
-        profile_user=user,
-        resources=resources,
-        categories=CATEGORIES,
+        "profile.html", profile_user=user,
+        resources=resources, categories=CATEGORIES,
     )
 
 
@@ -226,13 +219,13 @@ def profile(username):
 def upload_avatar():
     file = request.files.get("avatar")
     if not file or file.filename == "":
-        flash("Файл не выбран.", "error")
+        flash(_("Файл не выбран."), "error")
         return redirect(url_for("main.profile", username=current_user.username))
 
     ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
     allowed = current_app.config.get("ALLOWED_AVATAR_EXTENSIONS", {"jpg", "jpeg", "png", "gif", "webp"})
     if ext not in allowed:
-        flash("Недопустимый формат файла. Используйте JPG, PNG, GIF или WebP.", "error")
+        flash(_("Недопустимый формат файла. Используйте JPG, PNG, GIF или WebP."), "error")
         return redirect(url_for("main.profile", username=current_user.username))
 
     filename = secure_filename(f"avatar_{current_user.id}.{ext}")
@@ -247,7 +240,7 @@ def upload_avatar():
     file.save(os.path.join(save_dir, filename))
     current_user.profile_picture = filename
     db.session.commit()
-    flash("Фото профиля обновлено!", "success")
+    flash(_("Фото профиля обновлено!"), "success")
     return redirect(url_for("main.profile", username=current_user.username))
 
 
@@ -269,7 +262,7 @@ def login():
             login_user(user, remember=True)
             return redirect(request.args.get("next") or url_for("main.index"))
 
-        flash("Неверное имя пользователя или пароль.", "error")
+        flash(_("Неверное имя пользователя или пароль."), "error")
 
     return render_template("login.html")
 
@@ -288,18 +281,18 @@ def register():
         ).scalar_one_or_none()
 
         if exists:
-            flash("Это имя пользователя уже занято.", "error")
+            flash(_("Это имя пользователя уже занято."), "error")
         elif len(username) < 3:
-            flash("Имя пользователя должно содержать минимум 3 символа.", "error")
+            flash(_("Имя пользователя должно содержать минимум 3 символа."), "error")
         elif len(password) < 6:
-            flash("Пароль должен содержать минимум 6 символов.", "error")
+            flash(_("Пароль должен содержать минимум 6 символов."), "error")
         else:
             user = User(username=username)
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
             login_user(user, remember=True)
-            flash(f"Добро пожаловать, {username}!", "success")
+            flash(_("Добро пожаловать, %(username)s!", username=username), "success")
             return redirect(url_for("main.index"))
 
     return render_template("register.html")

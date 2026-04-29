@@ -5,14 +5,13 @@
 #}
 <article class="card">
 
-  {# ── Top row: badge + delete ────────────────────────────────────────────── #}
   <div class="card-top">
     <span class="badge badge-{{ res.category }}">{{ res.category_label }}</span>
     {% if current_user.is_authenticated and res.user_id == current_user.id %}
       <form method="POST"
             action="{{ url_for('main.delete_resource', resource_id=res.id) }}"
-            onsubmit="return confirm('Удалить этот материал?')">
-        <button type="submit" class="btn-delete" aria-label="Удалить">
+            onsubmit="return confirm('{{ _('Удалить этот материал?') }}')">
+        <button type="submit" class="btn-delete" aria-label="{{ _('Удалить этот материал?') }}">
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                fill="none" stroke="currentColor" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round">
@@ -26,7 +25,6 @@
     {% endif %}
   </div>
 
-  {# ── Title ──────────────────────────────────────────────────────────────── #}
   <h2 class="card-title">{{ res.title }}</h2>
 
   {% if res.subject %}
@@ -37,13 +35,12 @@
     <p class="card-description">{{ res.short_description }}</p>
   {% endif %}
 
-  {# ── Footer: date + open link ─────────────────────────────────────────── #}
   <div class="card-footer">
     <a href="{{ url_for('main.profile', username=res.author.username) }}"
        class="card-author">{{ res.author.username }}</a>
     <span class="card-date">{{ res.timestamp.strftime('%d.%m.%Y') }}</span>
     <a href="{{ res.link }}" target="_blank" rel="noopener noreferrer" class="card-link">
-      Открыть
+      {{ _('Открыть') }}
       <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2.5"
            stroke-linecap="round" stroke-linejoin="round">
@@ -53,7 +50,6 @@
     </a>
   </div>
 
-  {# ── Interaction: votes ───────────────────────────────────────────────── #}
   <div class="card-interactions">
     {% if current_user.is_authenticated %}
       {% set user_vote = res.user_vote(current_user.id) %}
@@ -63,7 +59,7 @@
             class="vote-form">
         <button type="submit"
                 class="vote-btn {% if user_vote == 'like' %}vote-active-like{% endif %}"
-                aria-label="Нравится">
+                aria-label="Like">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
                fill="{% if user_vote == 'like' %}currentColor{% else %}none{% endif %}"
                stroke="currentColor" stroke-width="2"
@@ -80,7 +76,7 @@
             class="vote-form">
         <button type="submit"
                 class="vote-btn {% if user_vote == 'dislike' %}vote-active-dislike{% endif %}"
-                aria-label="Не нравится">
+                aria-label="Dislike">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
                fill="{% if user_vote == 'dislike' %}currentColor{% else %}none{% endif %}"
                stroke="currentColor" stroke-width="2"
@@ -93,8 +89,7 @@
       </form>
 
     {% else %}
-      {# Read-only counters for unauthenticated visitors #}
-      <span class="vote-btn vote-readonly" title="Войдите, чтобы голосовать">
+      <span class="vote-btn vote-readonly">
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round">
@@ -103,7 +98,7 @@
         </svg>
         <span>{{ res.likes }}</span>
       </span>
-      <span class="vote-btn vote-readonly" title="Войдите, чтобы голосовать">
+      <span class="vote-btn vote-readonly">
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round">
@@ -116,11 +111,10 @@
 
     <span class="interaction-divider"></span>
 
-    {# ── Comment toggle ─────────────────────────────────────────────────── #}
     <button class="vote-btn comment-toggle-btn"
             onclick="toggleComments({{ res.id }})"
             data-title="{{ res.title }}"
-            aria-label="Комментарии">
+            aria-label="{{ _('Комментарии') }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round">
@@ -130,10 +124,8 @@
     </button>
   </div>
 
-  {# ── Comments panel (hidden by default) ─────────────────────────────────── #}
   <div class="comments-panel" id="comments-{{ res.id }}" hidden>
 
-    {# Existing comments #}
     {% if res.comments %}
       <ul class="comment-list">
         {% for c in res.comments %}
@@ -141,18 +133,16 @@
             <a href="{{ url_for('main.profile', username=c.author.username) }}"
                class="comment-author">{{ c.author.username }}</a>
             <span class="comment-text">{{ c.text }}</span>
-            <time class="comment-time"
-                  datetime="{{ c.timestamp.isoformat() }}">
+            <time class="comment-time" datetime="{{ c.timestamp.isoformat() }}">
               {{ c.timestamp.strftime('%d.%m.%Y') }}
             </time>
           </li>
         {% endfor %}
       </ul>
     {% else %}
-      <p class="comment-empty">Комментариев пока нет. Будьте первым!</p>
+      <p class="comment-empty">{{ _('Комментариев пока нет. Будьте первым!') }}</p>
     {% endif %}
 
-    {# New comment form (authenticated only) #}
     {% if current_user.is_authenticated %}
       <form method="POST"
             action="{{ url_for('main.add_comment', resource_id=res.id) }}"
@@ -160,11 +150,11 @@
         <input type="text"
                name="text"
                class="comment-input"
-               placeholder="Добавить комментарий..."
+               placeholder="{{ _('Добавить комментарий...') }}"
                maxlength="500"
                required
                autocomplete="off" />
-        <button type="submit" class="comment-submit" aria-label="Отправить">
+        <button type="submit" class="comment-submit" aria-label="→">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
                fill="none" stroke="currentColor" stroke-width="2.5"
                stroke-linecap="round" stroke-linejoin="round">
@@ -175,8 +165,8 @@
       </form>
     {% else %}
       <p class="comment-empty">
-        <a href="{{ url_for('main.login') }}" style="color:var(--accent)">Войдите</a>,
-        чтобы оставить комментарий.
+        <a href="{{ url_for('main.login') }}" style="color:var(--accent)">{{ _('Войдите') }}</a>,
+        {{ _('чтобы оставить комментарий') }}.
       </p>
     {% endif %}
 

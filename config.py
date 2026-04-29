@@ -13,3 +13,6 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAX_CONTENT_LENGTH = 2 * 1024 * 1024
     ALLOWED_AVATAR_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
+    LANGUAGES = ['ru', 'en', 'kk']
+    BABEL_DEFAULT_LOCALE = 'ru'
+    BABEL_TRANSLATION_DIRECTORIES = 'translations'

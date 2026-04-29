@@ -1,0 +1,221 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Поиск по названию, теме..."
+msgstr "Search by title, topic..."
+
+msgid "Добавить"
+msgstr "Add"
+
+msgid "Выйти"
+msgstr "Log out"
+
+msgid "Войти"
+msgstr "Log in"
+
+msgid "Регистрация"
+msgstr "Register"
+
+msgid "Навигация"
+msgstr "Navigation"
+
+msgid "Все материалы"
+msgstr "All materials"
+
+msgid "Категории"
+msgstr "Categories"
+
+msgid "Предметы"
+msgstr "Subjects"
+
+msgid "Результаты поиска"
+msgstr "Search results"
+
+msgid "Сбросить фильтр"
+msgstr "Clear filter"
+
+msgid "Материалы не найдены"
+msgstr "Materials not found"
+
+msgid "Попробуйте изменить запрос или"
+msgstr "Try changing your query or"
+
+msgid "сбросить фильтры"
+msgstr "clear filters"
+
+msgid "Станьте первым, кто поделится знаниями!"
+msgstr "Be the first to share knowledge!"
+
+msgid "+ Добавить материал"
+msgstr "+ Add material"
+
+msgid "Удалить этот материал?"
+msgstr "Delete this material?"
+
+msgid "Открыть"
+msgstr "Open"
+
+msgid "Комментарии"
+msgstr "Comments"
+
+msgid "Комментариев пока нет. Будьте первым!"
+msgstr "No comments yet. Be the first!"
+
+msgid "Добавить комментарий..."
+msgstr "Add a comment..."
+
+msgid "Войдите"
+msgstr "Log in"
+
+msgid "чтобы оставить комментарий"
+msgstr "to leave a comment"
+
+msgid "Участник с"
+msgstr "Member since"
+
+msgid "материалов загружено"
+msgstr "materials uploaded"
+
+msgid "Публикации"
+msgstr "Publications"
+
+msgid "Материалов пока нет"
+msgstr "No materials yet"
+
+msgid "Поделитесь чем-нибудь полезным!"
+msgstr "Share something useful!"
+
+msgid "Изменить фото"
+msgstr "Change photo"
+
+msgid "Добро пожаловать"
+msgstr "Welcome"
+
+msgid "Войдите в свой аккаунт"
+msgstr "Sign in to your account"
+
+msgid "Пароль"
+msgstr "Password"
+
+msgid "Запомнить меня"
+msgstr "Remember me"
+
+msgid "Нет аккаунта?"
+msgstr "Don't have an account?"
+
+msgid "Зарегистрироваться"
+msgstr "Register"
+
+msgid "Создать аккаунт"
+msgstr "Create account"
+
+msgid "Присоединяйтесь к библиотеке знаний"
+msgstr "Join the knowledge library"
+
+msgid "Минимум 6 символов"
+msgstr "Minimum 6 characters"
+
+msgid "Подтвердите пароль"
+msgstr "Confirm password"
+
+msgid "Повторите пароль"
+msgstr "Repeat password"
+
+msgid "Уже есть аккаунт?"
+msgstr "Already have an account?"
+
+msgid "Назад"
+msgstr "Back"
+
+msgid "Добавить материал"
+msgstr "Add material"
+
+msgid "Поделитесь полезным ресурсом с командой"
+msgstr "Share a useful resource with the team"
+
+msgid "Название"
+msgstr "Title"
+
+msgid "Например: Лекция по алгоритмам — MIT OpenCourseWare"
+msgstr "e.g. Algorithm lecture — MIT OpenCourseWare"
+
+msgid "Ссылка"
+msgstr "Link"
+
+msgid "Категория"
+msgstr "Category"
+
+msgid "Предмет / Тема"
+msgstr "Subject / Topic"
+
+msgid "Описание"
+msgstr "Description"
+
+msgid "Кратко опишите, чем полезен этот материал..."
+msgstr "Briefly describe what makes this material useful..."
+
+msgid "Отмена"
+msgstr "Cancel"
+
+msgid "Опубликовать"
+msgstr "Publish"
+
+msgid "Заполните все обязательные поля."
+msgstr "Please fill in all required fields."
+
+msgid "Материал успешно добавлен!"
+msgstr "Material successfully added!"
+
+msgid "Материал удалён."
+msgstr "Material deleted."
+
+msgid "Комментарий не может быть пустым."
+msgstr "Comment cannot be empty."
+
+msgid "Пожалуйста, войдите в систему."
+msgstr "Please log in."
+
+msgid "Неверное имя пользователя или пароль."
+msgstr "Incorrect username or password."
+
+msgid "Это имя пользователя уже занято."
+msgstr "This username is already taken."
+
+msgid "Имя пользователя должно содержать минимум 3 символа."
+msgstr "Username must be at least 3 characters."
+
+msgid "Пароль должен содержать минимум 6 символов."
+msgstr "Password must be at least 6 characters."
+
+msgid "Добро пожаловать, %(username)s!"
+msgstr "Welcome, %(username)s!"
+
+msgid "Файл не выбран."
+msgstr "No file selected."
+
+msgid "Недопустимый формат файла. Используйте JPG, PNG, GIF или WebP."
+msgstr "Invalid file format. Use JPG, PNG, GIF or WebP."
+
+msgid "Фото профиля обновлено!"
+msgstr "Profile photo updated!"
+
+msgid "Лекция"
+msgstr "Lecture"
+
+msgid "Книга"
+msgstr "Book"
+
+msgid "Статья"
+msgstr "Article"
+
+msgid "Видео"
+msgstr "Video"
+
+msgid "Задание"
+msgstr "Assignment"
+
+msgid "Другое"
+msgstr "Other"

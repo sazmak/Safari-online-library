@@ -63,6 +63,33 @@
   --c-other:   #6b6864;
 }
 
+/* ── Light theme ────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg-base:      #f5f2eb;
+  --bg-surface:   #edeae0;
+  --bg-elevated:  #e4e0d4;
+  --bg-hover:     #d9d4c5;
+  --bg-glass:     rgba(245, 242, 235, 0.88);
+
+  --accent:       #a07830;
+  --accent-light: #b88c3a;
+  --accent-dim:   #886420;
+  --accent-glow:  rgba(160, 120, 48, 0.20);
+  --accent-sub:   rgba(160, 120, 48, 0.10);
+
+  --text-1: #1a1714;
+  --text-2: #5a5650;
+  --text-3: #9a9690;
+
+  --border:        rgba(0,0,0,0.09);
+  --border-hover:  rgba(0,0,0,0.16);
+  --border-accent: rgba(160,120,48,0.35);
+
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.10);
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.12);
+  --shadow-lift: 0 8px 32px rgba(0,0,0,0.16), 0 0 0 1px var(--border-accent);
+}
+
 /* ── Reset ──────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -246,6 +273,57 @@ img, svg { display: block; }
   background: var(--accent-light);
   box-shadow: 0 0 16px var(--accent-glow);
 }
+
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.lang-btn {
+  padding: 4px 9px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+  transition: color var(--t-fast), background var(--t-fast);
+  white-space: nowrap;
+}
+
+.lang-btn:hover { color: var(--text-1); }
+
+.lang-active {
+  background: var(--accent-sub);
+  color: var(--accent);
+}
+
+.btn-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  background: var(--bg-elevated);
+  color: var(--text-2);
+  transition: color var(--t-fast), background var(--t-fast), border-color var(--t-fast);
+}
+.btn-theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--border-accent);
+  background: var(--accent-sub);
+}
+
+/* dark mode: show moon, hide sun */
+.icon-sun  { display: none; }
+.icon-moon { display: block; }
+
+[data-theme="light"] .icon-sun  { display: block; }
+[data-theme="light"] .icon-moon { display: none; }
 
 /* ── Page Shell ─────────────────────────────────────────────── */
 .page-shell {

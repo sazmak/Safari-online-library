@@ -4,14 +4,12 @@
 
 {% block content %}
 
-{# ── Profile Hero ─────────────────────────────────────────────────────────── #}
 <div class="profile-hero">
 
-  {# Avatar — clickable upload for own profile #}
   {% if current_user.is_authenticated and current_user.id == profile_user.id %}
     <form method="POST" action="{{ url_for('main.upload_avatar') }}"
           enctype="multipart/form-data" id="avatar-form">
-      <label class="profile-avatar profile-avatar--editable" title="Изменить фото">
+      <label class="profile-avatar profile-avatar--editable" title="{{ _('Изменить фото') }}">
         {% if profile_user.profile_picture %}
           <img src="{{ url_for('static', filename='uploads/avatars/' + profile_user.profile_picture) }}"
                alt="{{ profile_user.username }}">
@@ -44,20 +42,19 @@
   <div class="profile-meta">
     <h1 class="profile-username">{{ profile_user.username }}</h1>
     <p class="profile-joined">
-      Участник с {{ profile_user.created_at.strftime('%B %Y') }}
+      {{ _('Участник с') }} {{ profile_user.created_at.strftime('%B %Y') }}
     </p>
   </div>
 
   <div class="profile-stat">
     <span class="profile-stat-value">{{ resources | length }}</span>
-    <span class="profile-stat-label">материалов загружено</span>
+    <span class="profile-stat-label">{{ _('материалов загружено') }}</span>
   </div>
 </div>
 
-{# ── Published resources ───────────────────────────────────────────────────── #}
 <div class="page-header" style="margin-top: var(--sp-8)">
   <h2 class="page-title" style="font-size:1.15rem">
-    Публикации
+    {{ _('Публикации') }}
     <span class="count-badge">{{ resources | length }}</span>
   </h2>
 </div>
@@ -78,11 +75,11 @@
         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
       </svg>
     </div>
-    <p class="empty-title">Материалов пока нет</p>
+    <p class="empty-title">{{ _('Материалов пока нет') }}</p>
     {% if current_user.is_authenticated and current_user.id == profile_user.id %}
-      <p class="empty-sub">Поделитесь чем-нибудь полезным!</p>
+      <p class="empty-sub">{{ _('Поделитесь чем-нибудь полезным!') }}</p>
       <a href="{{ url_for('main.add_resource') }}" class="btn-submit" style="margin-top:1rem">
-        + Добавить материал
+        {{ _('+ Добавить материал') }}
       </a>
     {% endif %}
   </div>
