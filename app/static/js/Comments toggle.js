@@ -13,8 +13,7 @@ function toggleComments(resourceId) {
   if (!overlay || !modalBody) return;
 
   modalTitle.textContent = title || 'Комментарии';
-  modalBody.innerHTML = '';
-  modalBody.appendChild(panel.cloneNode(true));
+  modalBody.innerHTML = panel.innerHTML;
 
   overlay.removeAttribute('hidden');
   overlay.setAttribute('aria-hidden', 'false');
